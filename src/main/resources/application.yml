@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: honest-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Logotipiwe/honest-be-config.git
+          default-label: main
+          clone-on-start: true
+          strict-host-key-checking: false
+          refresh-rate: 5
+          password: ${GIT_TOKEN}
+          username: logotipiwe
+      enabled: true
+
+
+server:
+  port: 8888
