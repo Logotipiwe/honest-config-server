@@ -29,6 +29,20 @@ jobs:
           script: |
             rm /kuber/honest-config-server
             mkdir -p /kuber/honest-config-server
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PAT }}
+      - name: Build
+        id: build_push
+        run: |
+          export IMAGE=${{ env.DOCKER_USER }}/honest-config-server:$(date +%s)
+          docker build . -t ${IMAGE}
+          docker push ${IMAGE}
+          echo "IMAGE=${IMAGE}" >> "$GITHUB_ENV"
+
       - name: Upload
         uses: garygrossgarten/github-action-scp@release
         with:
@@ -46,6 +60,7 @@ jobs:
           port: 22
           script: |
             export GIT_TOKEN=${{env.GIT_TOKEN}}
+            export IMAGE=${{ env.IMAGE }}
             cd /kuber/honest-config-server/
             
             docker-compose down --remove-orphans
