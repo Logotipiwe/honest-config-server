@@ -65,5 +65,5 @@ jobs:
             export IMAGE=${{ env.IMAGE }}
             cd /honest/honest-config-server/
             
-            docker-compose down --remove-orphans
-            docker-compose up -d
+            docker compose down --remove-orphans
+            docker compose up -d
