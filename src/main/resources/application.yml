@@ -5,12 +5,13 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/Logotipiwe/honest-be-config.git
+          uri: ${CONFIG_SERVER_GIT_URL}
+          searchPaths: '{application}'
           default-label: main
           clone-on-start: true
           strict-host-key-checking: false
           refresh-rate: 5
-          password: ${GIT_TOKEN}
+          password: ${CONFIG_SERVER_GIT_TOKEN}
           username: logotipiwe
       enabled: true
 

@@ -6,7 +6,8 @@ services:
     image: ${IMAGE}
     container_name: honest-config-server
     environment:
-      - GIT_TOKEN=${GIT_TOKEN}
+      - CONFIG_SERVER_GIT_URL=${CONFIG_SERVER_GIT_URL}
+      - CONFIG_SERVER_GIT_TOKEN=${CONFIG_SERVER_GIT_TOKEN}
     restart: always
     networks:
       - dc-net

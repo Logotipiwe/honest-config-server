@@ -1,16 +1,8 @@
 version: '3.8'
-name: honest-config-server
 
 services:
   config-server:
     build: .
-    container_name: honest-config-server
-    environment:
-      - GIT_TOKEN=${GIT_TOKEN}
-    restart: always
-    networks:
-      - dc-net
-
-networks:
-  dc-net:
-    external: true
+    image: honest-config-server-local
+    ports:
+      - "8888:8888"

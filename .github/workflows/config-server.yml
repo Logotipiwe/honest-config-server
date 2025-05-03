@@ -6,30 +6,30 @@ on:
   workflow_call:
 jobs:
   build:
-    if: contains(github.event.head_commit.message, '[deploy-old]')
+    if: contains(github.event.head_commit.message, '[deploy]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: Logotipiwe/dc_vars
-          token: ${{secrets.PAT}}
+          repository: Honest-games/honest-secrets
+          token: ${{secrets.CI_PAT}}
       - name: load-env
         uses: duskmoon314/action-load-env@v1.1.0
       - name: Checkout project
         uses: actions/checkout@v3
         with:
-          repository: Logotipiwe/honest-config-server
-          token: ${{secrets.PAT}}
+          repository: ${{env.GITHUB_REPOSITORY}}
+          token: ${{secrets.CI_PAT}}
       - name: Create folder
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{env.DC_HOST}}
+          host: ${{env.SSH_IP}}
           username: ${{env.SSH_USER}}
           password: ${{env.SSH_PASSWORD}}
           port: 22
           script: |
-            rm /kuber/honest-config-server
-            mkdir -p /kuber/honest-config-server
+            rm /honest/honest-config-server
+            mkdir -p /honest/honest-config-server
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -48,21 +48,22 @@ jobs:
         uses: garygrossgarten/github-action-scp@release
         with:
           local: ./docker-compose.yml
-          remote: /kuber/honest-config-server/docker-compose.yml
-          host: ${{env.DC_HOST}}
+          remote: /honest/honest-config-server/docker-compose.yml
+          host: ${{env.SSH_IP}}
           username: ${{env.SSH_USER}}
           password: ${{env.SSH_PASSWORD}}
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{env.DC_HOST}}
+          host: ${{env.SSH_IP}}
           username: ${{env.SSH_USER}}
           password: ${{env.SSH_PASSWORD}}
           port: 22
           script: |
-            export GIT_TOKEN=${{env.GIT_TOKEN}}
+            export CONFIG_SERVER_GIT_TOKEN=${{env.CONFIG_SERVER_GIT_TOKEN}}
+            export CONFIG_SERVER_GIT_URL=${{env.CONFIG_SERVER_GIT_URL}}
             export IMAGE=${{ env.IMAGE }}
-            cd /kuber/honest-config-server/
+            cd /honest/honest-config-server/
             
             docker-compose down --remove-orphans
             docker-compose up -d
